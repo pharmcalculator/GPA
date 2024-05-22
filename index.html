@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GPA Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      line-height: 1.5;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    h1 {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    table {
+      width: 50%;
+      border-collapse: collapse;
+      margin: 20px auto;
+    }
+    
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    input {
+      width: 50%;
+      font-size: 20px;
+      padding: 10px;
+    }
+    
+    button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      font-size: 24px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    
+    #result {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>GPA Calculator</h1>
+
+  <table id="courseTable">
+    <thead>
+      <tr>
+        <th>Course</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="text" id="course1" placeholder="Course 1" required></td>
+        <td><input type="number" id="score1" min="0" max="100" required></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button onclick="addCourse()">Add Course</button>
+  <button onclick="calculateGPA()">Calculate GPA</button>
+
+  <div id="result"></div>
+  <script>
+    let courseCount = 1;
+
+    function getGradeValue(score) {
+      if (score >= 97) return 4.0;
+      else if (score >= 93) return 4.0;
+      else if (score >= 90) return 3.7;
+      else if (score >= 87) return 3.3;
+      else if (score >= 83) return 3.0;
+      else if (score >= 80) return 2.7;
+      else if (score >= 77) return 2.3;
+      else if (score >= 73) return 2.0;
+      else if (score >= 70) return 1.7;
+      else if (score >= 67) return 1.3;
+      else if (score >= 65) return 1.0;
+      else if (score >= 60) return 0.7;
+      else return 0.0;
+    }
+
+    function addCourse() {
+      courseCount++;
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td><input type="text" id="course${courseCount}" placeholder="Course ${courseCount}" required></td>
+        <td><input type="number" id="score${courseCount}" min="0" max="100" required></td>
+      `;
+      document.getElementById('courseTable').getElementsByTagName('tbody')[0].appendChild(newRow);
+    }
+
+    function calculateGPA() {
+      let totalGrade = 0;
+      let courseTable = '<table><tr><th>Course</th><th>Score</th><th>GPA</th></tr>';
+
+      for (let i = 1; i <= courseCount; i++) {
+        const courseName = document.getElementById(`course${i}`).value;
+        const score = parseFloat(document.getElementById(`score${i}`).value);
+        const gradeValue = getGradeValue(score);
+        totalGrade += gradeValue;
+        courseTable += `<tr><td>${courseName}</td><td>${score}</td><td>${gradeValue.toFixed(1)}</td></tr>`;
+      }
+
+      const gpa = totalGrade / courseCount;
+      courseTable += '</table>';
+      displayResults(gpa, courseTable);
+    }
+
+    function displayResults(gpa, courseTable) {
+      document.getElementById('result').innerHTML = `
+        Your GPA is: ${gpa.toFixed(2)}
+        <br><br>
+        Courses:
+        <br>
+        ${courseTable}
+        <br><br>
+        Numerical Value to Letter Grade Conversion:
+        <br>
+        A+ = 97-100 = 4.0
+        <br>
+        A = 93-96 = 4.0
+        <br>
+        A- = 90-92 = 3.7
+        <br>
+        B+ = 87-89 = 3.3
+        <br>
+        B = 83-86 = 3.0
+        <br>
+        B- = 80-82 = 2.7
+        <br>
+        C+ = 77-79 = 2.3
+        <br>
+        C = 73-76 = 2.0
+        <br>
+        C- = 70-72 = 1.7
+        <br>
+        D+ = 67-69 = 1.3
+        <br>
+        D = 65-66 = 1.0
+        <br>
+        D- = 60-64 = 0.7
+        <br>
+        F = 0-59 = 0.0
+      `;
+    }
+  </script>
+</body>
+</html>
